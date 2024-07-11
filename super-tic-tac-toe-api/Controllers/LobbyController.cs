@@ -25,6 +25,8 @@ namespace super_tic_tac_toe_api.Controllers
             if (lobby == null)
                 return NotFound("Lobby not found.");
 
+            if (lobby.Players.Where(p => p.Name == request.PlayerName).Any())
+                return BadRequest($"Player '{request.PlayerName}' already exist.");
             var playerType = lobby.Players.Count == 0 ? CellType.X : CellType.O;
             var player = new Player(request.PlayerName, playerType);
 

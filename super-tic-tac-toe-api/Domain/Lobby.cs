@@ -18,7 +18,7 @@ namespace super_tic_tac_toe_api
         private int GenerateLobbyCode()
         {
             var rnd = new Random();
-            return rnd.Next(1000000, 9999999);
+            return rnd.Next(10000000, 99999999);
         }
 
         public bool AddPlayer(Player player)
