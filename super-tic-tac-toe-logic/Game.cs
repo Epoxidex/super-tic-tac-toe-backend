@@ -4,58 +4,90 @@ namespace super_tic_tac_toe_logic
 {
     internal class Game
     {
-        private SubGrid[,] _subGrids;
-        private CellType[,] _macroGrid;
-        private CellType _currentPlayer;
+        public SubGrid[,] SubGrids { get; private set; }
+        public CellType[,] MacroGrid { get; private set; }
+        public CellType CurrentPlayer { get; private set; }
         public CellType Winner { get; private set; }
+        public bool[,] MoveField { get; private set; }
 
         public Game()
         {
-            _subGrids = new SubGrid[3, 3];
-            _macroGrid = new CellType[3, 3];
-            _currentPlayer = CellType.X;
+            SubGrids = new SubGrid[3, 3];
+            MacroGrid = new CellType[3, 3];
+            CurrentPlayer = CellType.X;
             Winner = CellType.None;
+            InitMoveField();
+            FillSubGrids();
+        }
 
+        private void InitMoveField(bool value = true)
+        {
+            MoveField = new bool[3, 3];
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
-                    _subGrids[i, j] = new SubGrid();
+                    MoveField[i, j] = value;
+        }
+        private void FillMoveField(int row, int col)
+        {
+            InitMoveField(value: false);
+            if (SubGrids[row, col].Winner == CellType.None)
+                MoveField[row, col] = true;
+            else
+                for (int i = 0;i < 3;i++)
+                    for (int j = 0;j < 3;j++)
+                        MoveField[i, j] = SubGrids[i, j].Winner == CellType.None;
+        }
+        private void FillSubGrids()
+        {
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    SubGrids[i, j] = new SubGrid();
         }
 
         public bool MakeMove(int subGridRow, int subGridCol, int cellRow, int cellCol)
         {
-            var currentGrid = _subGrids[subGridRow, subGridCol];
-            if (!currentGrid.MakeMove(cellRow, cellCol, _currentPlayer))
-            {
-                return false;
-            }
+            var currentGrid = SubGrids[subGridRow, subGridCol];
 
-            if (currentGrid.Winner == _currentPlayer)
-                _macroGrid[subGridRow, subGridCol] = _currentPlayer;
+            if (MoveField[subGridRow, subGridCol] == false) return false;
+            if (currentGrid.MakeMove(cellRow, cellCol, CurrentPlayer) == false) return false;
 
-            if (CheckWinner(_currentPlayer))
-                Winner = _currentPlayer;
+            if (currentGrid.Winner == CurrentPlayer)
+                MacroGrid[subGridRow, subGridCol] = CurrentPlayer;
 
+            if (CheckWinner(CurrentPlayer))
+                Winner = CurrentPlayer;
+
+            FillMoveField(subGridRow, subGridCol);
             SwitchPlayer();
             return true;
         }
 
         private void SwitchPlayer()
         {
-            _currentPlayer = _currentPlayer == CellType.X ? CellType.O : CellType.X;
+            CurrentPlayer = CurrentPlayer == CellType.X ? CellType.O : CellType.X;
         }
 
         private bool CheckWinner(CellType player)
         {
+            return CheckRowsCols(player) || CheckDiagonals(player);
+        }
+
+        private bool CheckRowsCols(CellType player)
+        {
             for (int i = 0; i < 3; i++)
             {
-                if (_macroGrid[i, 0] == player && _macroGrid[i, 1] == player && _macroGrid[i, 2] == player)
+                if (MacroGrid[i, 0] == player && MacroGrid[i, 1] == player && MacroGrid[i, 2] == player)
                     return true;
-                if (_macroGrid[0, i] == player && _macroGrid[1, i] == player && _macroGrid[2, i] == player)
+                if (MacroGrid[0, i] == player && MacroGrid[1, i] == player && MacroGrid[2, i] == player)
                     return true;
             }
-            if (_macroGrid[0, 0] == player && _macroGrid[1, 1] == player && _macroGrid[2, 2] == player)
+            return false;
+        }
+        private bool CheckDiagonals(CellType player)
+        {
+            if (MacroGrid[0, 0] == player && MacroGrid[1, 1] == player && MacroGrid[2, 2] == player)
                 return true;
-            if (_macroGrid[0, 2] == player && _macroGrid[1, 1] == player && _macroGrid[2, 0] == player)
+            if (MacroGrid[0, 2] == player && MacroGrid[1, 1] == player && MacroGrid[2, 0] == player)
                 return true;
 
             return false;

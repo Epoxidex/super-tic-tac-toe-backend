@@ -32,6 +32,11 @@ namespace super_tic_tac_toe_logic
 
         private bool CheckWinner(CellType player)
         {
+            return CheckRowsCols(player) || CheckDiagonals(player);
+        }
+
+        private bool CheckRowsCols(CellType player)
+        {
             for (int i = 0; i < 3; i++)
             {
                 if (_grid[i, 0] == player && _grid[i, 1] == player && _grid[i, 2] == player)
@@ -39,6 +44,10 @@ namespace super_tic_tac_toe_logic
                 if (_grid[0, i] == player && _grid[1, i] == player && _grid[2, i] == player)
                     return true;
             }
+            return false;
+        }
+        private bool CheckDiagonals(CellType player)
+        {
             if (_grid[0, 0] == player && _grid[1, 1] == player && _grid[2, 2] == player)
                 return true;
             if (_grid[0, 2] == player && _grid[1, 1] == player && _grid[2, 0] == player)
