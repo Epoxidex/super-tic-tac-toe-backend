@@ -51,11 +51,14 @@ namespace super_tic_tac_toe_logic
             if (MoveField[subGridRow, subGridCol] == false) return false;
             if (currentGrid.MakeMove(cellRow, cellCol, CurrentPlayer) == false) return false;
 
-            if (currentGrid.Winner == CurrentPlayer)
+            if (currentGrid.Winner != CellType.None)
                 MacroGrid[subGridRow, subGridCol] = CurrentPlayer;
 
             if (CheckWinner(CurrentPlayer))
                 Winner = CurrentPlayer;
+            else
+                if (CheckFull())
+                Winner = CellType.Draw;
 
             FillMoveField(subGridRow, subGridCol);
             SwitchPlayer();
@@ -91,6 +94,17 @@ namespace super_tic_tac_toe_logic
                 return true;
 
             return false;
+        }
+        private bool CheckFull()
+        {
+            foreach (var grid in SubGrids)
+            {
+                if (grid.Winner == CellType.None)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

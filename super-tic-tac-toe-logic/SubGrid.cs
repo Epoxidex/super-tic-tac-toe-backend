@@ -1,5 +1,4 @@
-﻿
-using super_tic_tac_toe_logic.Enums;
+﻿using super_tic_tac_toe_logic.Enums;
 
 namespace super_tic_tac_toe_logic
 {
@@ -7,7 +6,6 @@ namespace super_tic_tac_toe_logic
     {
         private CellType[,] _grid;
         public CellType Winner { get; private set; }
-        public bool IsFull => CheckFull();
 
         public SubGrid()
         {
@@ -24,8 +22,11 @@ namespace super_tic_tac_toe_logic
 
             _grid[row, col] = player;
 
-            if (CheckWinner(player)) 
+            if (CheckWinner(player))
                 Winner = player;
+            else
+                if (CheckFull()) 
+                Winner = CellType.Draw;
 
             return true;
         }
