@@ -1,6 +1,3 @@
 @super_tic_tac_toe_api_HostAddress = http://localhost:5248
 
-GET {{super_tic_tac_toe_api_HostAddress}}/weatherforecast/
-Accept: application/json
-
 ###

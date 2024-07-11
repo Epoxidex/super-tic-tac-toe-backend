@@ -93,11 +93,11 @@ namespace super_tic_tac_toe_api.Controllers
         [HttpDelete("deleteLobby")]
         public IActionResult DeleteLobby([FromBody] DeleteLobbyRequest request)
         {
-            Lobby? lobbyToRemove = lobbies.FirstOrDefault(l => l.LobbyCode == request.lobbyCode);
+            Lobby? lobbyToRemove = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
             if (lobbyToRemove == null)
                 return NotFound("Lobby not found.");
             lobbies.Remove(lobbyToRemove);
-            return Ok($"Lobby {request.lobbyCode} removed.");
+            return Ok($"Lobby {request.LobbyCode} removed.");
         }
 
         [HttpDelete("deletePlayer")]
