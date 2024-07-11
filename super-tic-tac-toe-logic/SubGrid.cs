@@ -2,7 +2,7 @@
 
 namespace super_tic_tac_toe_logic
 {
-    internal class SubGrid
+    public class SubGrid
     {
         private CellType[,] _grid;
         public CellType Winner { get; private set; }
@@ -30,7 +30,10 @@ namespace super_tic_tac_toe_logic
 
             return true;
         }
-
+        public CellType[,] GetGridState()
+        {
+            return _grid.Clone() as CellType[,];
+        }
         private bool CheckWinner(CellType player)
         {
             return CheckRowsCols(player) || CheckDiagonals(player);

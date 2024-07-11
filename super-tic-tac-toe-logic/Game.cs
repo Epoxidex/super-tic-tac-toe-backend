@@ -2,7 +2,7 @@
 
 namespace super_tic_tac_toe_logic
 {
-    internal class Game
+    public class Game
     {
         public SubGrid[,] SubGrids { get; private set; }
         public CellType[,] MacroGrid { get; private set; }

@@ -1,6 +1,6 @@
 ﻿namespace super_tic_tac_toe_logic.Enums
 {
-    internal enum CellType
+    public enum CellType
     {
         None = 0,
         X = 1,

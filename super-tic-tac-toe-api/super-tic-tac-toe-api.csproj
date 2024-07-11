@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\super-tic-tac-toe-logic\super-tic-tac-toe-logic.csproj" />
   </ItemGroup>
 
 </Project>
