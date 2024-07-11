@@ -91,13 +91,13 @@ namespace super_tic_tac_toe_api.Controllers
         }
 
         [HttpDelete("deleteLobby")]
-        public IActionResult DeleteLobby([FromQuery] int lobbyCode)
+        public IActionResult DeleteLobby([FromBody] DeleteLobbyRequest request)
         {
-            Lobby? lobbyToRemove = lobbies.FirstOrDefault(l => l.LobbyCode == lobbyCode);
+            Lobby? lobbyToRemove = lobbies.FirstOrDefault(l => l.LobbyCode == request.lobbyCode);
             if (lobbyToRemove == null)
                 return NotFound("Lobby not found.");
             lobbies.Remove(lobbyToRemove);
-            return Ok($"Lobby {lobbyCode} removed.");
+            return Ok($"Lobby {request.lobbyCode} removed.");
         }
 
         [HttpDelete("deletePlayer")]
@@ -144,6 +144,11 @@ namespace super_tic_tac_toe_api.Controllers
     }
 
     public class StartGameRequest
+    {
+        public int LobbyCode { get; set; }
+    }
+
+    public class DeleteLobbyRequest
     {
         public int LobbyCode { get; set; }
     }
