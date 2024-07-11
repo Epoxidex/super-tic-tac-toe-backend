@@ -14,8 +14,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\super-tic-tac-toe-logic\super-tic-tac-toe-logic.csproj" />
-  </ItemGroup>
-
 </Project>
