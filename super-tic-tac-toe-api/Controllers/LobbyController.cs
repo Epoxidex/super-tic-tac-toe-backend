@@ -78,14 +78,29 @@ namespace super_tic_tac_toe_api.Controllers
 
             var gameState = new
             {
-                MacroGrid = lobby.CurrentGame.MacroGrid,
-                SubGrids = lobby.CurrentGame.SubGrids.ToEnumerable().Select(subGrid => subGrid.GetGridState()).ToArray(),
+                MacroGrid = ConvertToNestedLists(lobby.CurrentGame.MacroGrid),
+                SubGrids = lobby.CurrentGame.SubGrids.ToEnumerable().Select(subGrid => ConvertToNestedLists(subGrid.GetGridState())).ToArray(),
                 CurrentPlayer = lobby.CurrentGame.CurrentPlayer,
                 Winner = lobby.CurrentGame.Winner,
-                MoveField = lobby.CurrentGame.MoveField
+                MoveField = ConvertToNestedLists(lobby.CurrentGame.MoveField)
             };
 
             return Ok(gameState);
+        }
+
+        private List<List<T>> ConvertToNestedLists<T>(T[,] array)
+        {
+            var result = new List<List<T>>();
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                var row = new List<T>();
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    row.Add(array[i, j]);
+                }
+                result.Add(row);
+            }
+            return result;
         }
     }
 

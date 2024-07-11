@@ -60,7 +60,7 @@ namespace super_tic_tac_toe_logic
                 if (CheckFull())
                 Winner = CellType.Draw;
 
-            FillMoveField(subGridRow, subGridCol);
+            FillMoveField(cellRow, cellCol);
             SwitchPlayer();
             return true;
         }
