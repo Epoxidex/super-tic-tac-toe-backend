@@ -10,7 +10,7 @@ namespace super_tic_tac_toe_api.Controllers
     {
         private static List<Lobby> lobbies = new List<Lobby>();
 
-        [HttpPost("create")]
+        [HttpPost("createLobby")]
         public IActionResult CreateLobby()
         {
             var lobby = new Lobby();
@@ -18,7 +18,7 @@ namespace super_tic_tac_toe_api.Controllers
             return Ok(new { LobbyCode = lobby.LobbyCode });
         }
 
-        [HttpPost("join")]
+        [HttpPost("joinLobby")]
         public IActionResult JoinLobby([FromBody] JoinLobbyRequest request)
         {
             var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
@@ -34,7 +34,7 @@ namespace super_tic_tac_toe_api.Controllers
             return Ok(new { PlayerType = player.PlayerType });
         }
 
-        [HttpPost("start")]
+        [HttpPost("startGame")]
         public IActionResult StartGame([FromBody] StartGameRequest request)
         {
             var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
@@ -47,7 +47,7 @@ namespace super_tic_tac_toe_api.Controllers
             return Ok("Game start.");
         }
 
-        [HttpPost("move")]
+        [HttpPost("makeMove")]
         public IActionResult MakeMove([FromBody] MoveRequest request)
         {
             var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
@@ -69,7 +69,7 @@ namespace super_tic_tac_toe_api.Controllers
             return Ok("The move was completed successfully.");
         }
 
-        [HttpGet("state")]
+        [HttpGet("getGameState")]
         public IActionResult GetGameState([FromQuery] int lobbyCode)
         {
             var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == lobbyCode);
@@ -88,6 +88,31 @@ namespace super_tic_tac_toe_api.Controllers
             return Ok(gameState);
         }
 
+        [HttpDelete("deleteLobby")]
+        public IActionResult DeleteLobby([FromQuery] int lobbyCode)
+        {
+            Lobby? lobbyToRemove = lobbies.FirstOrDefault(l => l.LobbyCode == lobbyCode);
+            if (lobbyToRemove == null)
+                return NotFound("Lobby not found.");
+            lobbies.Remove(lobbyToRemove);
+            return Ok($"Lobby {lobbyCode} removed.");
+        }
+
+        [HttpDelete("deletePlayer")]
+        public IActionResult DeletePlayer([FromBody] DeletePlayerRequest request)
+        {
+            var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
+            if (lobby == null)
+                return NotFound("lobby not found.");
+
+            Player? playerToRemove = lobby.Players.FirstOrDefault(p => p.Name == request.PlayerName);
+            if (playerToRemove == null)
+                return NotFound("Player not found");
+
+            lobby.Players.Remove(playerToRemove);
+            return Ok($"Player {request.PlayerName} removed.");
+        }
+
         private List<List<T>> ConvertToNestedLists<T>(T[,] array)
         {
             var result = new List<List<T>>();
@@ -102,6 +127,12 @@ namespace super_tic_tac_toe_api.Controllers
             }
             return result;
         }
+    }
+
+    public class DeletePlayerRequest
+    {
+        public int LobbyCode { get; set; }
+        public string PlayerName { get; set; }
     }
 
     public class JoinLobbyRequest
