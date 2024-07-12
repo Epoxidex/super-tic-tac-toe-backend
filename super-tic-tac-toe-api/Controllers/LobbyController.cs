@@ -81,7 +81,7 @@ namespace super_tic_tac_toe_api.Controllers
             var gameState = new
             {
                 Board = ConvertToNestedLists(lobby.CurrentGame.Board),
-                Sectors = lobby.CurrentGame.Sectors.ToEnumerable().Select(subGrid => ConvertToNestedLists(subGrid.GetSectorState())).ToArray(),
+                Sectors = lobby.CurrentGame.Sectors.ToEnumerable().Select(subGrid => ConvertToNestedLists(subGrid.Cells)).ToArray(),
                 Turn = lobby.CurrentGame.Turn,
                 Winner = lobby.CurrentGame.Winner,
                 MoveField = ConvertToNestedLists(lobby.CurrentGame.MoveField)

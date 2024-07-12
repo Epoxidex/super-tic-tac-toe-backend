@@ -4,23 +4,23 @@ namespace super_tic_tac_toe_logic
 {
     public class Sector
     {
-        private CellType[,] _sector;
+        public CellType[,] Cells { get; private set; }
         public CellType Winner { get; private set; }
 
         public Sector()
         {
-            _sector = new CellType[3, 3];
+            Cells = new CellType[3, 3];
             Winner = CellType.None;
         }
 
         public bool MakeMove(int row, int col, CellType player)
         {
-            if (_sector[row, col] != CellType.None)
+            if (Cells[row, col] != CellType.None)
             {
                 return false;
             }
 
-            _sector[row, col] = player;
+            Cells[row, col] = player;
 
             if (CheckWinner(player))
                 Winner = player;
@@ -29,10 +29,6 @@ namespace super_tic_tac_toe_logic
                 Winner = CellType.Draw;
 
             return true;
-        }
-        public CellType[,] GetSectorState()
-        {
-            return _sector.Clone() as CellType[,];
         }
         private bool CheckWinner(CellType player)
         {
@@ -43,18 +39,18 @@ namespace super_tic_tac_toe_logic
         {
             for (int i = 0; i < 3; i++)
             {
-                if (_sector[i, 0] == player && _sector[i, 1] == player && _sector[i, 2] == player)
+                if (Cells[i, 0] == player && Cells[i, 1] == player && Cells[i, 2] == player)
                     return true;
-                if (_sector[0, i] == player && _sector[1, i] == player && _sector[2, i] == player)
+                if (Cells[0, i] == player && Cells[1, i] == player && Cells[2, i] == player)
                     return true;
             }
             return false;
         }
         private bool CheckDiagonals(CellType player)
         {
-            if (_sector[0, 0] == player && _sector[1, 1] == player && _sector[2, 2] == player)
+            if (Cells[0, 0] == player && Cells[1, 1] == player && Cells[2, 2] == player)
                 return true;
-            if (_sector[0, 2] == player && _sector[1, 1] == player && _sector[2, 0] == player)
+            if (Cells[0, 2] == player && Cells[1, 1] == player && Cells[2, 0] == player)
                 return true;
 
             return false;
@@ -62,7 +58,7 @@ namespace super_tic_tac_toe_logic
 
         private bool CheckFull()
         {
-            foreach (var cell in _sector)
+            foreach (var cell in Cells)
             {
                 if (cell == CellType.None)
                 {
