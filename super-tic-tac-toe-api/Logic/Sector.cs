@@ -1,6 +1,6 @@
-﻿using super_tic_tac_toe_logic.Enums;
+﻿using super_tic_tac_toe_api.Logic.Enums;
 
-namespace super_tic_tac_toe_logic
+namespace super_tic_tac_toe_api.Logic
 {
     public class Sector
     {
@@ -25,7 +25,7 @@ namespace super_tic_tac_toe_logic
             if (CheckWinner(player))
                 Winner = player;
             else
-                if (CheckFull()) 
+                if (CheckFull())
                 Winner = CellType.Draw;
 
             return true;

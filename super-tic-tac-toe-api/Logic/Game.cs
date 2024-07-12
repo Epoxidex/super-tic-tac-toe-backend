@@ -1,6 +1,6 @@
-﻿using super_tic_tac_toe_logic.Enums;
+﻿using super_tic_tac_toe_api.Logic.Enums;
 
-namespace super_tic_tac_toe_logic
+namespace super_tic_tac_toe_api.Logic
 {
     public class Game
     {
@@ -33,8 +33,8 @@ namespace super_tic_tac_toe_logic
             if (Sectors[row, col].Winner == CellType.None)
                 MoveField[row, col] = true;
             else
-                for (int i = 0;i < 3;i++)
-                    for (int j = 0;j < 3;j++)
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
                         MoveField[i, j] = Sectors[i, j].Winner == CellType.None;
         }
         private void InitSectors()

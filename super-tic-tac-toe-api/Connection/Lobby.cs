@@ -1,4 +1,4 @@
-﻿using super_tic_tac_toe_logic;
+﻿using super_tic_tac_toe_api.Logic;
 
 namespace super_tic_tac_toe_api
 {

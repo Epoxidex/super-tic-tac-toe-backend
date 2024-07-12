@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using super_tic_tac_toe_logic.Enums;
+using super_tic_tac_toe_api.Logic.Enums;
 using super_tic_tac_toe_logic.Extensions;
+using super_tic_tac_toe_api.Connection.RequestsModels;
+using super_tic_tac_toe_api.Helpers;
 
 namespace super_tic_tac_toe_api.Controllers
 {
@@ -80,11 +82,11 @@ namespace super_tic_tac_toe_api.Controllers
 
             var gameState = new
             {
-                Board = ConvertToNestedLists(lobby.CurrentGame.Board),
-                Sectors = lobby.CurrentGame.Sectors.ToEnumerable().Select(subGrid => ConvertToNestedLists(subGrid.Cells)).ToArray(),
+                Board = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Board),
+                Sectors = lobby.CurrentGame.Sectors.ToEnumerable().Select(subGrid => ArrayHelper.ConvertToNestedLists(subGrid.Cells)).ToArray(),
                 Turn = lobby.CurrentGame.Turn,
                 Winner = lobby.CurrentGame.Winner,
-                MoveField = ConvertToNestedLists(lobby.CurrentGame.MoveField)
+                MoveField = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.MoveField)
             };
 
             return Ok(gameState);
@@ -114,52 +116,5 @@ namespace super_tic_tac_toe_api.Controllers
             lobby.Players.Remove(playerToRemove);
             return Ok($"Player {request.PlayerName} removed.");
         }
-
-        private List<List<T>> ConvertToNestedLists<T>(T[,] array)
-        {
-            var result = new List<List<T>>();
-            for (int i = 0; i < array.GetLength(0); i++)
-            {
-                var row = new List<T>();
-                for (int j = 0; j < array.GetLength(1); j++)
-                {
-                    row.Add(array[i, j]);
-                }
-                result.Add(row);
-            }
-            return result;
-        }
-    }
-
-    public class DeletePlayerRequest
-    {
-        public int LobbyCode { get; set; }
-        public string PlayerName { get; set; }
-    }
-
-    public class JoinLobbyRequest
-    {
-        public int LobbyCode { get; set; }
-        public string PlayerName { get; set; }
-    }
-
-    public class StartGameRequest
-    {
-        public int LobbyCode { get; set; }
-    }
-
-    public class DeleteLobbyRequest
-    {
-        public int LobbyCode { get; set; }
-    }
-
-    public class MoveRequest
-    {
-        public int LobbyCode { get; set; }
-        public string PlayerName { get; set; }
-        public int SectorRow { get; set; }
-        public int SectorCol { get; set; }
-        public int CellRow { get; set; }
-        public int CellCol { get; set; }
     }
 }

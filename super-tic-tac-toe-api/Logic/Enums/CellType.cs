@@ -1,4 +1,4 @@
-﻿namespace super_tic_tac_toe_logic.Enums
+﻿namespace super_tic_tac_toe_api.Logic.Enums
 {
     public enum CellType
     {
