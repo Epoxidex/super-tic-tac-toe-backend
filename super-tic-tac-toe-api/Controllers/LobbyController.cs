@@ -60,10 +60,10 @@ namespace super_tic_tac_toe_api.Controllers
             if (player == null)
                 return NotFound("Player not found.");
 
-            if (lobby.CurrentGame.CurrentPlayer != player.PlayerType)
+            if (lobby.CurrentGame.Turn != player.PlayerType)
                 return BadRequest("It's not your turn now.");
 
-            bool moveSuccessful = lobby.CurrentGame.MakeMove(request.SubGridRow, request.SubGridCol, request.CellRow, request.CellCol);
+            bool moveSuccessful = lobby.CurrentGame.MakeMove(request.SectorRow, request.SectorCol, request.CellRow, request.CellCol);
 
             if (!moveSuccessful)
                 return BadRequest("Incorrect move.");
@@ -80,9 +80,9 @@ namespace super_tic_tac_toe_api.Controllers
 
             var gameState = new
             {
-                MacroGrid = ConvertToNestedLists(lobby.CurrentGame.MacroGrid),
-                SubGrids = lobby.CurrentGame.SubGrids.ToEnumerable().Select(subGrid => ConvertToNestedLists(subGrid.GetGridState())).ToArray(),
-                CurrentPlayer = lobby.CurrentGame.CurrentPlayer,
+                Board = ConvertToNestedLists(lobby.CurrentGame.Board),
+                Sectors = lobby.CurrentGame.Sectors.ToEnumerable().Select(subGrid => ConvertToNestedLists(subGrid.GetSectorState())).ToArray(),
+                Turn = lobby.CurrentGame.Turn,
                 Winner = lobby.CurrentGame.Winner,
                 MoveField = ConvertToNestedLists(lobby.CurrentGame.MoveField)
             };
@@ -157,8 +157,8 @@ namespace super_tic_tac_toe_api.Controllers
     {
         public int LobbyCode { get; set; }
         public string PlayerName { get; set; }
-        public int SubGridRow { get; set; }
-        public int SubGridCol { get; set; }
+        public int SectorRow { get; set; }
+        public int SectorCol { get; set; }
         public int CellRow { get; set; }
         public int CellCol { get; set; }
     }
