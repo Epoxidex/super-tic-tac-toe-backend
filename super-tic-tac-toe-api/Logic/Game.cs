@@ -54,7 +54,7 @@ namespace super_tic_tac_toe_api.Logic
             if (currentGrid.Winner != CellType.None)
                 Board[sectorRow, sectorCol] = Turn;
 
-            if (CheckWinner(sectorRow sectorCol))
+            if (CheckWinner(sectorRow, sectorCol))
                 Winner = Turn;
             else
                 if (CheckFull())
