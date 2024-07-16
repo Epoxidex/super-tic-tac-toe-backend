@@ -54,7 +54,7 @@ namespace super_tic_tac_toe_api.Logic
             if (currentGrid.Winner != CellType.None)
                 Board[sectorRow, sectorCol] = Turn;
 
-            if (CheckWinner(Turn))
+            if (CheckWinner(sectorRow, sectorCol))
                 Winner = Turn;
             else
                 if (CheckFull())
@@ -70,31 +70,23 @@ namespace super_tic_tac_toe_api.Logic
             Turn = Turn == CellType.X ? CellType.O : CellType.X;
         }
 
-        private bool CheckWinner(CellType player)
+        private bool CheckWinner(int row, int col)
         {
-            return CheckRowsCols(player) || CheckDiagonals(player);
-        }
-
-        private bool CheckRowsCols(CellType player)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                if (Board[i, 0] == player && Board[i, 1] == player && Board[i, 2] == player)
-                    return true;
-                if (Board[0, i] == player && Board[1, i] == player && Board[2, i] == player)
-                    return true;
-            }
-            return false;
-        }
-        private bool CheckDiagonals(CellType player)
-        {
-            if (Board[0, 0] == player && Board[1, 1] == player && Board[2, 2] == player)
+            if (Board[row, 0] == Board[row, 1] && Board[row, 0] == Board[row, 2])
                 return true;
-            if (Board[0, 2] == player && Board[1, 1] == player && Board[2, 0] == player)
+            if (Board[0, col] == Board[1, col] && Board[0, col] == Board[2, col])
                 return true;
 
+            if (row == col)
+                if (Board[0, 0] == Board[1, 1] && Board[0, 0] == Board[2, 2])
+                    return true;
+            if (row + col == 2)
+                if (Board[0, 2] == Board[1, 1] && Board[0, 2] == Board[2, 0])
+                    return true;
+                    
             return false;
         }
+
         private bool CheckFull()
         {
             foreach (var grid in Sectors)
