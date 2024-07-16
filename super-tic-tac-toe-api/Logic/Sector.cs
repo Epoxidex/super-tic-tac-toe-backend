@@ -22,7 +22,7 @@ namespace super_tic_tac_toe_api.Logic
 
             Cells[row, col] = player;
 
-            if (CheckWinner(player))
+            if (CheckWinner(row, col))
                 Winner = player;
             else
                 if (CheckFull())
@@ -30,28 +30,20 @@ namespace super_tic_tac_toe_api.Logic
 
             return true;
         }
-        private bool CheckWinner(CellType player)
-        {
-            return CheckRowsCols(player) || CheckDiagonals(player);
-        }
 
-        private bool CheckRowsCols(CellType player)
+        private bool CheckWinner(int row, int col)
         {
-            for (int i = 0; i < 3; i++)
-            {
-                if (Cells[i, 0] == player && Cells[i, 1] == player && Cells[i, 2] == player)
-                    return true;
-                if (Cells[0, i] == player && Cells[1, i] == player && Cells[2, i] == player)
-                    return true;
-            }
-            return false;
-        }
-        private bool CheckDiagonals(CellType player)
-        {
-            if (Cells[0, 0] == player && Cells[1, 1] == player && Cells[2, 2] == player)
+            if (Cells[row, 0] == Cells[row, 1] && Cells[row, 0] == Cells[row, 2])
                 return true;
-            if (Cells[0, 2] == player && Cells[1, 1] == player && Cells[2, 0] == player)
+            if (Cells[0, col] == Cells[1, col] && Cells[0, col] == Cells[2, col])
                 return true;
+
+            if (row == col)
+                if (Cells[0, 0] == Cells[1, 1] && Cells[0, 0] == Cells[2, 2])
+                    return true;
+            if (row + col == 2)
+                if (Cells[0, 2] == Cells[1, 1] && Cells[0, 2] == Cells[2, 0])
+                    return true;
 
             return false;
         }
