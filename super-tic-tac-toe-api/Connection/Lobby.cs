@@ -4,18 +4,18 @@ namespace super_tic_tac_toe_api
 {
     internal class Lobby
     {
-        public int LobbyCode { get; private set; }
+        public int LobbyId { get; private set; }
         public List<Player> Players { get; private set; }
         public Game CurrentGame { get; private set; }
 
         public Lobby()
         {
-            LobbyCode = GenerateLobbyCode();
+            LobbyId = GenerateLobbyId();
             Players = new List<Player>();
             CurrentGame = new Game();
         }
 
-        private int GenerateLobbyCode()
+        private int GenerateLobbyId()
         {
             var rnd = new Random();
             return rnd.Next(10000000, 99999999);

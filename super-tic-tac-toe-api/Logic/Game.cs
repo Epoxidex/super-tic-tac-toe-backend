@@ -8,7 +8,7 @@ namespace super_tic_tac_toe_api.Logic
         public CellType[,] Board { get; private set; }
         public CellType Turn { get; private set; }
         public CellType Winner { get; private set; }
-        public bool[,] MoveField { get; private set; }
+        public bool[,] OpenSectors { get; private set; }
 
         public Game()
         {
@@ -16,26 +16,26 @@ namespace super_tic_tac_toe_api.Logic
             Board = new CellType[3, 3];
             Turn = CellType.X;
             Winner = CellType.None;
-            InitMoveField();
+            InitOpenSectors();
             InitSectors();
         }
 
-        private void InitMoveField(bool value = true)
+        private void InitOpenSectors(bool value = true)
         {
-            MoveField = new bool[3, 3];
+            OpenSectors = new bool[3, 3];
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
-                    MoveField[i, j] = value;
+                    OpenSectors[i, j] = value;
         }
-        private void FillMoveField(int row, int col)
+        private void FillOpenSectors(int row, int col)
         {
-            InitMoveField(value: false);
+            InitOpenSectors(value: false);
             if (Sectors[row, col].Winner == CellType.None)
-                MoveField[row, col] = true;
+                OpenSectors[row, col] = true;
             else
                 for (int i = 0; i < 3; i++)
                     for (int j = 0; j < 3; j++)
-                        MoveField[i, j] = Sectors[i, j].Winner == CellType.None;
+                        OpenSectors[i, j] = Sectors[i, j].Winner == CellType.None;
         }
         private void InitSectors()
         {
@@ -48,7 +48,7 @@ namespace super_tic_tac_toe_api.Logic
         {
             var currentGrid = Sectors[sectorRow, sectorCol];
 
-            if (MoveField[sectorRow, sectorCol] == false) return false;
+            if (OpenSectors[sectorRow, sectorCol] == false) return false;
             if (currentGrid.MakeMove(cellRow, cellCol, Turn) == false) return false;
 
             if (currentGrid.Winner != CellType.None)
@@ -60,7 +60,7 @@ namespace super_tic_tac_toe_api.Logic
                 if (CheckFull())
                 Winner = CellType.Draw;
 
-            FillMoveField(cellRow, cellCol);
+            FillOpenSectors(cellRow, cellCol);
             SwitchPlayer();
             return true;
         }

@@ -17,13 +17,13 @@ namespace super_tic_tac_toe_api.Controllers
         {
             var lobby = new Lobby();
             lobbies.Add(lobby);
-            return Ok(new { LobbyCode = lobby.LobbyCode });
+            return Ok(new { LobbyId = lobby.LobbyId });
         }
 
         [HttpPost("joinLobby")]
         public IActionResult JoinLobby([FromBody] JoinLobbyRequest request)
         {
-            var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
+            var lobby = lobbies.FirstOrDefault(l => l.LobbyId == request.LobbyId);
             if (lobby == null)
                 return NotFound("Lobby not found.");
 
@@ -41,7 +41,7 @@ namespace super_tic_tac_toe_api.Controllers
         [HttpPost("startGame")]
         public IActionResult StartGame([FromBody] StartGameRequest request)
         {
-            var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
+            var lobby = lobbies.FirstOrDefault(l => l.LobbyId == request.LobbyId);
             if (lobby == null)
                 return NotFound("Lobby not found.");
 
@@ -54,7 +54,7 @@ namespace super_tic_tac_toe_api.Controllers
         [HttpPost("makeMove")]
         public IActionResult MakeMove([FromBody] MoveRequest request)
         {
-            var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
+            var lobby = lobbies.FirstOrDefault(l => l.LobbyId == request.LobbyId);
             if (lobby == null)
                 return NotFound("Lobby not found.");
 
@@ -74,9 +74,9 @@ namespace super_tic_tac_toe_api.Controllers
         }
 
         [HttpGet("getGameState")]
-        public IActionResult GetGameState([FromQuery] int lobbyCode)
+        public IActionResult GetGameState([FromQuery] int lobbyId)
         {
-            var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == lobbyCode);
+            var lobby = lobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
             if (lobby == null)
                 return NotFound("lobby not found.");
 
@@ -86,7 +86,7 @@ namespace super_tic_tac_toe_api.Controllers
                 Sectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Sectors).Select(x => x.Select(y => ArrayHelper.ConvertToNestedLists(y.Cells))),
                 Turn = lobby.CurrentGame.Turn,
                 Winner = lobby.CurrentGame.Winner,
-                MoveField = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.MoveField)
+                OpenSectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.OpenSectors)
             };
 
             return Ok(gameState);
@@ -95,17 +95,17 @@ namespace super_tic_tac_toe_api.Controllers
         [HttpDelete("deleteLobby")]
         public IActionResult DeleteLobby([FromBody] DeleteLobbyRequest request)
         {
-            Lobby? lobbyToRemove = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
+            Lobby? lobbyToRemove = lobbies.FirstOrDefault(l => l.LobbyId == request.LobbyId);
             if (lobbyToRemove == null)
                 return NotFound("Lobby not found.");
             lobbies.Remove(lobbyToRemove);
-            return Ok($"Lobby {request.LobbyCode} removed.");
+            return Ok($"Lobby {request.LobbyId} removed.");
         }
 
         [HttpDelete("deletePlayer")]
         public IActionResult DeletePlayer([FromBody] DeletePlayerRequest request)
         {
-            var lobby = lobbies.FirstOrDefault(l => l.LobbyCode == request.LobbyCode);
+            var lobby = lobbies.FirstOrDefault(l => l.LobbyId == request.LobbyId);
             if (lobby == null)
                 return NotFound("lobby not found.");
 
