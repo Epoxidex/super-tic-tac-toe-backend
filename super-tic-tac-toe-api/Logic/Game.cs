@@ -50,12 +50,14 @@ namespace super_tic_tac_toe_api.Logic
             if (!currentGrid.MakeMove(cellRow, cellCol, Turn)) return false;
 
             if (currentGrid.HasWinner)
+            {
                 Board[sectorRow, sectorCol] = Turn;
 
-            if (CheckWinner(sectorRow, sectorCol))
-                Winner = Turn;
-            else if (IsFull)
-                Winner = CellType.Draw;
+                if (CheckWinner(sectorRow, sectorCol))
+                    Winner = Turn;
+                else if (IsFull)
+                    Winner = CellType.Draw;
+            }
 
             UpdateOpenSectors(cellRow, cellCol);
             SwitchPlayer();

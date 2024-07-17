@@ -15,7 +15,7 @@ namespace super_tic_tac_toe_api.Logic
         }
         protected bool CheckWinner(int row, int col)
         {
-            if (Board[row, 0] == Board[row, 1] && Board[row, 0] == Board[row, 2]) return true;
+            if (Board[row, 0] == Board[row, 1] && Board[row, 0] == Board[row, 2] ) return true;
             if (Board[0, col] == Board[1, col] && Board[0, col] == Board[2, col]) return true;
 
             if (row == col && Board[0, 0] == Board[1, 1] && Board[0, 0] == Board[2, 2]) return true;
