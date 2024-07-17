@@ -55,28 +55,6 @@ namespace super_tic_tac_toe_api.Controllers
             return Ok(new { PlayerType = player.PlayerType });
         }
 
-        [HttpPost("startGame")]
-        public IActionResult StartGame([FromBody] StartGameRequest request)
-        {
-            Log.Information("Starting game in lobby {LobbyId}", request.LobbyId);
-
-            var lobby = lobbies.FirstOrDefault(l => l.LobbyId == request.LobbyId);
-            if (lobby == null)
-            {
-                Log.Warning("Lobby {LobbyId} not found", request.LobbyId);
-                return NotFound("Lobby not found.");
-            }
-
-            if (!lobby.StartGame())
-            {
-                Log.Warning("Game could not be started in lobby {LobbyId}. Not enough players.", request.LobbyId);
-                return BadRequest("The game could not be started. There must be 2 players in the lobby.");
-            }
-
-            Log.Information("Game started in lobby {LobbyId}", request.LobbyId);
-            return Ok("Game start.");
-        }
-
         [HttpPost("makeMove")]
         public IActionResult MakeMove([FromBody] MoveRequest request)
         {
@@ -87,12 +65,6 @@ namespace super_tic_tac_toe_api.Controllers
             {
                 Log.Warning("Lobby {LobbyId} not found", request.LobbyId);
                 return NotFound("Lobby not found.");
-            }
-
-            if (lobby.CurrentGame == null)
-            {
-                Log.Warning("Game not started in lobby {LobbyId}", request.LobbyId);
-                return NotFound("Game not started.");
             }
 
             var player = lobby.Players.FirstOrDefault(p => p.Name == request.PlayerName);
@@ -130,12 +102,6 @@ namespace super_tic_tac_toe_api.Controllers
             {
                 Log.Warning("Lobby {LobbyId} not found", lobbyId);
                 return NotFound("lobby not found.");
-            }
-
-            if (lobby.CurrentGame == null)
-            {
-                Log.Warning("Game not started in lobby {LobbyId}", lobbyId);
-                return NotFound("Game not started.");
             }
 
             var player = lobby.Players.FirstOrDefault(p => p.Name == playerName);

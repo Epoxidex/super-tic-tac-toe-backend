@@ -12,11 +12,6 @@
         public string PlayerName { get; set; }
     }
 
-    public class StartGameRequest
-    {
-        public int LobbyId { get; set; }
-    }
-
     public class DeleteLobbyRequest
     {
         public int LobbyId { get; set; }

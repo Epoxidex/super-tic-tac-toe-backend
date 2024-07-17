@@ -12,7 +12,7 @@ namespace super_tic_tac_toe_api
         {
             LobbyId = GenerateLobbyId();
             Players = new List<Player>();
-            CurrentGame = new Game(); //TODO change to null
+            CurrentGame = new Game(); 
         }
 
         private int GenerateLobbyId()
@@ -27,15 +27,6 @@ namespace super_tic_tac_toe_api
                 return false;
 
             Players.Add(player);
-            return true;
-        }
-
-        public bool StartGame()
-        {
-            if (Players.Count != 2)
-                return false;
-
-            CurrentGame = new Game();
             return true;
         }
     }
