@@ -12,7 +12,7 @@ namespace super_tic_tac_toe_api
         {
             LobbyId = GenerateLobbyId();
             Players = new List<Player>();
-            CurrentGame = null;
+            CurrentGame = new Game(); //TODO change to null
         }
 
         private int GenerateLobbyId()
