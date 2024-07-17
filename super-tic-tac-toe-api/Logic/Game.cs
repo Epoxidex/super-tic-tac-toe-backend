@@ -2,65 +2,62 @@
 
 namespace super_tic_tac_toe_api.Logic
 {
-    public class Game
+    public class Game : BaseBoard
     {
         public Sector[,] Sectors { get; private set; }
-        public CellType[,] Board { get; private set; }
         public CellType Turn { get; private set; }
-        public CellType Winner { get; private set; }
         public bool[,] OpenSectors { get; private set; }
-
-        public Game()
+        public Game() : base()
         {
-            Sectors = new Sector[3, 3];
-            Board = new CellType[3, 3];
+            Sectors = InitializeSectors();
             Turn = CellType.X;
-            Winner = CellType.None;
-            InitOpenSectors();
-            InitSectors();
+            OpenSectors = InitializeOpenSectors();
         }
-
-        private void InitOpenSectors(bool value = true)
+        private Sector[,] InitializeSectors()
         {
-            OpenSectors = new bool[3, 3];
+            var sectors = new Sector[3, 3];
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
-                    OpenSectors[i, j] = value;
+                    sectors[i, j] = new Sector();
+            return sectors;
         }
-        private void FillOpenSectors(int row, int col)
+        private bool[,] InitializeOpenSectors(bool value = true)
         {
-            InitOpenSectors(value: false);
-            if (Sectors[row, col].Winner == CellType.None)
+            var openSectors = new bool[3, 3];
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    openSectors[i, j] = value;
+            return openSectors;
+        }
+        private void UpdateOpenSectors(int row, int col)
+        {
+            OpenSectors = InitializeOpenSectors(false);
+
+            if (!Sectors[row, col].HasWinner)
                 OpenSectors[row, col] = true;
             else
+            {
                 for (int i = 0; i < 3; i++)
                     for (int j = 0; j < 3; j++)
-                        OpenSectors[i, j] = Sectors[i, j].Winner == CellType.None;
+                        OpenSectors[i, j] = !Sectors[i, j].HasWinner;
+            }
         }
-        private void InitSectors()
-        {
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    Sectors[i, j] = new Sector();
-        }
-
         public bool MakeMove(int sectorRow, int sectorCol, int cellRow, int cellCol)
         {
+            if (!OpenSectors[sectorRow, sectorCol]) return false;
+
             var currentGrid = Sectors[sectorRow, sectorCol];
+            if (!currentGrid.MakeMove(cellRow, cellCol, Turn)) return false;
 
-            if (OpenSectors[sectorRow, sectorCol] == false) return false;
-            if (currentGrid.MakeMove(cellRow, cellCol, Turn) == false) return false;
-
-            if (currentGrid.Winner != CellType.None)
+            if (currentGrid.HasWinner)
                 Board[sectorRow, sectorCol] = Turn;
 
             if (CheckWinner(sectorRow, sectorCol))
                 Winner = Turn;
-            else
-                if (CheckFull())
+            else if (IsFull)
                 Winner = CellType.Draw;
 
-            FillOpenSectors(cellRow, cellCol);
+            UpdateOpenSectors(cellRow, cellCol);
             SwitchPlayer();
             return true;
         }
@@ -68,35 +65,6 @@ namespace super_tic_tac_toe_api.Logic
         private void SwitchPlayer()
         {
             Turn = Turn == CellType.X ? CellType.O : CellType.X;
-        }
-
-        private bool CheckWinner(int row, int col)
-        {
-            if (Board[row, 0] == Board[row, 1] && Board[row, 0] == Board[row, 2])
-                return true;
-            if (Board[0, col] == Board[1, col] && Board[0, col] == Board[2, col])
-                return true;
-
-            if (row == col)
-                if (Board[0, 0] == Board[1, 1] && Board[0, 0] == Board[2, 2])
-                    return true;
-            if (row + col == 2)
-                if (Board[0, 2] == Board[1, 1] && Board[0, 2] == Board[2, 0])
-                    return true;
-                    
-            return false;
-        }
-
-        private bool CheckFull()
-        {
-            foreach (var grid in Sectors)
-            {
-                if (grid.Winner == CellType.None)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }

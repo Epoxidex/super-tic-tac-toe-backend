@@ -128,7 +128,7 @@ namespace super_tic_tac_toe_api.Controllers
             {
                 Player = lobby.Players.Where(p => p.Name == playerName).Select(p => p.PlayerType).FirstOrDefault(),
                 Board = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Board),
-                Sectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Sectors).Select(x => x.Select(y => ArrayHelper.ConvertToNestedLists(y.Cells))),
+                Sectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Sectors).Select(x => x.Select(y => ArrayHelper.ConvertToNestedLists(y.Board))),
                 Turn = lobby.CurrentGame.Turn,
                 Winner = lobby.CurrentGame.Winner,
                 OpenSectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.OpenSectors)
