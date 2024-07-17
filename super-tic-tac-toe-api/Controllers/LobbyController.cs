@@ -42,7 +42,20 @@ namespace super_tic_tac_toe_api.Controllers
                 return BadRequest($"Player '{request.PlayerName}' already exist.");
             }
 
-            var playerType = lobby.Players.Count == 0 ? CellType.X : CellType.O;
+            CellType playerType;
+            switch (lobby.Players.Count)
+            {
+                case 0:
+                    playerType = CellType.X;
+                    break;
+                case 1:
+                    playerType = CellType.O;
+                    break;
+                default:
+                    playerType = CellType.None;
+                    break;
+            }
+
             var player = new Player(request.PlayerName, playerType);
 
             if (!lobby.AddPlayer(player))
