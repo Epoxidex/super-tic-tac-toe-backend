@@ -74,7 +74,7 @@ namespace super_tic_tac_toe_api.Controllers
         }
 
         [HttpGet("getGameState")]
-        public IActionResult GetGameState([FromQuery] int lobbyId)
+        public IActionResult GetGameState([FromQuery] int lobbyId, [FromQuery] string playerName)
         {
             var lobby = lobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
             if (lobby == null)
@@ -82,6 +82,7 @@ namespace super_tic_tac_toe_api.Controllers
 
             var gameState = new
             {
+                Player = lobby.Players.Where(p => p.Name == playerName).Select(p => p.PlayerType).FirstOrDefault(),
                 Board = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Board),
                 Sectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Sectors).Select(x => x.Select(y => ArrayHelper.ConvertToNestedLists(y.Cells))),
                 Turn = lobby.CurrentGame.Turn,
