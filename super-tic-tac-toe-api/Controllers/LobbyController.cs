@@ -106,9 +106,9 @@ namespace super_tic_tac_toe_api.Controllers
         }
 
         [HttpGet("getGameState")]
-        public IActionResult GetGameState([FromQuery] int lobbyId, [FromQuery] string playerName)
+        public IActionResult GetGameState([FromQuery] int lobbyId)
         {
-            Log.Information("Getting game state for player {PlayerName} in lobby {LobbyId}", playerName, lobbyId);
+            Log.Information("Getting game state for lobby {LobbyId}", lobbyId);
 
             var lobby = lobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
             if (lobby == null)
@@ -117,16 +117,8 @@ namespace super_tic_tac_toe_api.Controllers
                 return NotFound("lobby not found.");
             }
 
-            var player = lobby.Players.FirstOrDefault(p => p.Name == playerName);
-            if (player == null)
-            {
-                Log.Warning("Player {PlayerName} not found in lobby {LobbyId}", playerName, lobbyId);
-                return NotFound("Player not found.");
-            }
-
             var gameState = new
             {
-                Player = lobby.Players.Where(p => p.Name == playerName).Select(p => p.PlayerType).FirstOrDefault(),
                 Board = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Board),
                 Sectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Sectors).Select(x => x.Select(y => ArrayHelper.ConvertToNestedLists(y.Board))),
                 Turn = lobby.CurrentGame.Turn,
@@ -134,9 +126,28 @@ namespace super_tic_tac_toe_api.Controllers
                 OpenSectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.OpenSectors)
             };
 
-            Log.Information("Game state retrieved for player {PlayerName} in lobby {LobbyId}", playerName, lobbyId);
+            Log.Information("Game state retrieved for lobby {LobbyId}", lobbyId);
             return Ok(gameState);
         }
+
+        [HttpGet("getLobbyState")]
+        public IActionResult GetLobbyState([FromQuery] int lobbyId)
+        {
+            Log.Information("Getting lobby state for lobby {LobbyId}", lobbyId);
+
+            var lobby = lobbies.FirstOrDefault(l => l.LobbyId == lobbyId);
+            if (lobby == null)
+            {
+                Log.Warning("Lobby {LobbyId} not found", lobbyId);
+                return NotFound("Lobby not found.");
+            }
+
+            var playerStates = lobby.Players.Select(p => new Dictionary<string, CellType> { { p.Name, p.PlayerType } }).ToList();
+
+            Log.Information("Lobby state retrieved for lobby {LobbyId}", lobbyId);
+            return Ok(playerStates);
+        }
+
 
         [HttpDelete("deleteLobby")]
         public IActionResult DeleteLobby([FromBody] DeleteLobbyRequest request)
