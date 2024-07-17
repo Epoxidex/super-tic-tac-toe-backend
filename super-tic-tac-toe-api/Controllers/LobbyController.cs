@@ -3,7 +3,6 @@ using super_tic_tac_toe_api.Logic.Enums;
 using super_tic_tac_toe_api.Connection.RequestsModels;
 using super_tic_tac_toe_api.Helpers;
 using Serilog;
-using System.Numerics;
 
 namespace super_tic_tac_toe_api.Controllers
 {
@@ -93,7 +92,7 @@ namespace super_tic_tac_toe_api.Controllers
             if (lobby.CurrentGame == null)
             {
                 Log.Warning("Game not started in lobby {LobbyId}", request.LobbyId);
-                return NotFound("Player not found.");
+                return NotFound("Game not started.");
             }
 
             var player = lobby.Players.FirstOrDefault(p => p.Name == request.PlayerName);
@@ -136,7 +135,7 @@ namespace super_tic_tac_toe_api.Controllers
             if (lobby.CurrentGame == null)
             {
                 Log.Warning("Game not started in lobby {LobbyId}", lobbyId);
-                return NotFound("Player not found.");
+                return NotFound("Game not started.");
             }
 
             var player = lobby.Players.FirstOrDefault(p => p.Name == playerName);
@@ -200,7 +199,7 @@ namespace super_tic_tac_toe_api.Controllers
             lobby.Players.Remove(playerToRemove);
 
             Log.Information("Player {PlayerName} removed from lobby {LobbyId}", request.PlayerName, request.LobbyId);
-            return Ok($"Player {request.PlayerName} removed.");
+            return Ok($"Player {request.PlayerName} removed from lobby {request.LobbyId}.");
         }
     }
 }
