@@ -6,13 +6,13 @@ namespace super_tic_tac_toe_api
     {
         public int LobbyId { get; private set; }
         public List<Player> Players { get; private set; }
-        public Game CurrentGame { get; private set; }
+        public Game? CurrentGame { get; private set; }
 
         public Lobby()
         {
             LobbyId = GenerateLobbyId();
             Players = new List<Player>();
-            CurrentGame = new Game();
+            CurrentGame = null;
         }
 
         private int GenerateLobbyId()
