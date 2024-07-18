@@ -40,19 +40,12 @@ namespace super_tic_tac_toe_api.Services
                 return JsonConvert.SerializeObject(new { Error = $"Player '{request.PlayerName}' already exist." });
             }
 
-            CellType playerType;
-            switch (lobby.Players.Count)
+            CellType playerType = lobby.Players.Count switch
             {
-                case 0:
-                    playerType = CellType.X;
-                    break;
-                case 1:
-                    playerType = CellType.O;
-                    break;
-                default:
-                    playerType = CellType.None;
-                    break;
-            }
+                0 => CellType.X,
+                1 => CellType.O,
+                _ => CellType.None,
+            };
 
             var player = new Player(request.PlayerName, playerType);
 
