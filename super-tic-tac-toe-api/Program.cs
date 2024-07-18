@@ -1,5 +1,7 @@
 using Serilog;
 using Serilog.Events;
+using super_tic_tac_toe_api.Services;
+using super_tic_tac_toe_api.Services.Interfaces;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -16,7 +18,7 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
+builder.Services.AddSingleton<ILobbyService, LobbyService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog();

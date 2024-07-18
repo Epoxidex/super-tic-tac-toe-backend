@@ -1,6 +1,6 @@
 ﻿using super_tic_tac_toe_api.Logic;
 
-namespace super_tic_tac_toe_api
+namespace super_tic_tac_toe_api.Entities
 {
     internal class Lobby
     {
@@ -12,7 +12,7 @@ namespace super_tic_tac_toe_api
         {
             LobbyId = GenerateLobbyId();
             Players = new List<Player>();
-            CurrentGame = new Game(); 
+            CurrentGame = new Game();
         }
 
         private int GenerateLobbyId()

@@ -1,6 +1,6 @@
 ﻿using super_tic_tac_toe_api.Logic.Enums;
 
-namespace super_tic_tac_toe_api
+namespace super_tic_tac_toe_api.Entities
 {
     internal class Player
     {

@@ -1,4 +1,4 @@
-﻿namespace super_tic_tac_toe_api.Connection.RequestsModels
+﻿namespace super_tic_tac_toe_api.Models
 {
     public class DeletePlayerRequest
     {
