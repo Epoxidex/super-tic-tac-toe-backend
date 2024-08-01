@@ -20,7 +20,7 @@ namespace super_tic_tac_toe_api.Services
             lobbies.Add(lobby);
 
             Log.Information("Lobby created with ID {LobbyId}", lobby.LobbyId);
-            return JsonConvert.SerializeObject(new { LobbyId = lobby.LobbyId }, Formatting.Indented);
+            return JsonConvert.SerializeObject(new { lobbyId = lobby.LobbyId }, Formatting.Indented);
         }
 
         public string JoinLobby(JoinLobbyRequest request)
@@ -31,13 +31,13 @@ namespace super_tic_tac_toe_api.Services
             if (lobby == null)
             {   
                 Log.Warning("Lobby {LobbyId} not found", request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Lobby not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Lobby not found." }, Formatting.Indented);
             }
 
             if (lobby.Players.Where(p => p.Name == request.PlayerName).Any())
             {
                 Log.Warning("Player {PlayerName} already exists in lobby {LobbyId}", request.PlayerName, request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = $"Player '{request.PlayerName}' already exist." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = $"Player '{request.PlayerName}' already exist." }, Formatting.Indented);
             }
 
             CellType playerType = lobby.Players.Count switch
@@ -52,11 +52,11 @@ namespace super_tic_tac_toe_api.Services
             if (!lobby.AddPlayer(player))
             {
                 Log.Warning("Lobby {LobbyId} is full", request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Lobby is full." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Lobby is full." }, Formatting.Indented);
             }
 
             Log.Information("Player {PlayerName} joined lobby {LobbyId} as {PlayerType}", request.PlayerName, request.LobbyId, player.PlayerType);
-            return JsonConvert.SerializeObject(new { PlayerType = player.PlayerType }, Formatting.Indented);
+            return JsonConvert.SerializeObject(new { playerType = player.PlayerType }, Formatting.Indented);
         }
 
         public string MakeMove(MoveRequest request)
@@ -67,20 +67,20 @@ namespace super_tic_tac_toe_api.Services
             if (lobby == null)
             {
                 Log.Warning("Lobby {LobbyId} not found", request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Lobby not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Lobby not found." }, Formatting.Indented);
             }
 
             var player = lobby.Players.FirstOrDefault(p => p.Name == request.PlayerName);
             if (player == null)
             {
                 Log.Warning("Player {PlayerName} not found in lobby {LobbyId}", request.PlayerName, request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Player not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Player not found." }, Formatting.Indented);
             }
 
             if (lobby.CurrentGame.Turn != player.PlayerType)
             {
                 Log.Warning("It's not {PlayerName}'s turn in lobby {LobbyId}", request.PlayerName, request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "It's not your turn now." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "It's not your turn now." }, Formatting.Indented);
             }
 
             bool moveSuccessful = lobby.CurrentGame.MakeMove(request.SectorRow, request.SectorCol, request.CellRow, request.CellCol);
@@ -88,11 +88,11 @@ namespace super_tic_tac_toe_api.Services
             if (!moveSuccessful)
             {
                 Log.Warning("Invalid move by {PlayerName} in lobby {LobbyId}", request.PlayerName, request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Incorrect move." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Incorrect move." }, Formatting.Indented);
             }
 
             Log.Information("Move by {PlayerName} completed successfully in lobby {LobbyId}", request.PlayerName, request.LobbyId);
-            return JsonConvert.SerializeObject(new { Success = "The move was completed successfully." }, Formatting.Indented);
+            return JsonConvert.SerializeObject(new { success = "The move was completed successfully." }, Formatting.Indented);
         }
 
         public string GetGameState(int lobbyId)
@@ -103,16 +103,16 @@ namespace super_tic_tac_toe_api.Services
             if (lobby == null)
             {
                 Log.Warning("Lobby {LobbyId} not found", lobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Lobby not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Lobby not found." }, Formatting.Indented);
             }
 
             var gameState = new
             {
-                Board = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Board),
-                Sectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Sectors).Select(x => x.Select(y => ArrayHelper.ConvertToNestedLists(y.Board))),
-                Turn = lobby.CurrentGame.Turn,
-                Winner = lobby.CurrentGame.Winner,
-                OpenSectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.OpenSectors)
+                board = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Board),
+                sectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.Sectors).Select(x => x.Select(y => ArrayHelper.ConvertToNestedLists(y.Board))),
+                turn = lobby.CurrentGame.Turn,
+                winner = lobby.CurrentGame.Winner,
+                openSectors = ArrayHelper.ConvertToNestedLists(lobby.CurrentGame.OpenSectors)
             };
 
             Log.Information("Game state retrieved for lobby {LobbyId}", lobbyId);
@@ -127,13 +127,14 @@ namespace super_tic_tac_toe_api.Services
             if (lobby == null)
             {
                 Log.Warning("Lobby {LobbyId} not found", lobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Lobby not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Lobby not found." }, Formatting.Indented);
             }
 
             var playerStates = lobby.Players.Select(p => new Dictionary<string, CellType> { { p.Name, p.PlayerType } }).ToList();
 
             Log.Information("Lobby state retrieved for lobby {LobbyId}", lobbyId);
             return JsonConvert.SerializeObject(playerStates, Formatting.Indented);
+            // TODO
         }
 
         public string DeleteLobby(DeleteLobbyRequest request)
@@ -144,13 +145,13 @@ namespace super_tic_tac_toe_api.Services
             if (lobbyToRemove == null)
             {
                 Log.Warning("Lobby {LobbyId} not found", request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Lobby not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Lobby not found." }, Formatting.Indented);
             }
 
             lobbies.Remove(lobbyToRemove);
 
             Log.Information("Lobby {LobbyId} removed", request.LobbyId);
-            return JsonConvert.SerializeObject(new { Success = $"Lobby {request.LobbyId} removed." }, Formatting.Indented);
+            return JsonConvert.SerializeObject(new { success = $"Lobby {request.LobbyId} removed." }, Formatting.Indented);
         }
 
         public string DeletePlayer(DeletePlayerRequest request)
@@ -161,20 +162,20 @@ namespace super_tic_tac_toe_api.Services
             if (lobby == null)
             {
                 Log.Warning("Lobby {LobbyId} not found", request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Lobby not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Lobby not found." }, Formatting.Indented);
             }
 
             Player? playerToRemove = lobby.Players.FirstOrDefault(p => p.Name == request.PlayerName);
             if (playerToRemove == null)
             {
                 Log.Warning("Player {PlayerName} not found in lobby {LobbyId}", request.PlayerName, request.LobbyId);
-                return JsonConvert.SerializeObject(new { Error = "Player not found." }, Formatting.Indented);
+                return JsonConvert.SerializeObject(new { error = "Player not found." }, Formatting.Indented);
             }
 
             lobby.Players.Remove(playerToRemove);
 
             Log.Information("Player {PlayerName} removed from lobby {LobbyId}", request.PlayerName, request.LobbyId);
-            return JsonConvert.SerializeObject(new { Success = $"Player {request.PlayerName} removed from lobby {request.LobbyId}." }, Formatting.Indented);
+            return JsonConvert.SerializeObject(new { success = $"Player {request.PlayerName} removed from lobby {request.LobbyId}." }, Formatting.Indented);
         }
     }
 }
