@@ -134,7 +134,6 @@ namespace super_tic_tac_toe_api.Services
 
             Log.Information("Lobby state retrieved for lobby {LobbyId}", lobbyId);
             return JsonConvert.SerializeObject(playerStates, Formatting.Indented);
-            // TODO
         }
 
         public string DeleteLobby(DeleteLobbyRequest request)
