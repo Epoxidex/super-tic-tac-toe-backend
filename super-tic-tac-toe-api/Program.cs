@@ -2,6 +2,8 @@ using Serilog;
 using Serilog.Events;
 using super_tic_tac_toe_api.Services;
 using super_tic_tac_toe_api.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -32,11 +34,23 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseSerilogRequestLogging();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
+app.UseWebSockets();
+
 app.MapControllers();
+app.Map("/ws", async context =>
+{
+    if (context.WebSockets.IsWebSocketRequest)
+    {
+        var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        await WebSocketHandler.Handle(context, webSocket);
+    }
+    else
+    {
+        context.Response.StatusCode = 400;
+    }
+});
 
 app.Run();

@@ -59,7 +59,7 @@ namespace super_tic_tac_toe_api.Services
             return JsonConvert.SerializeObject(new { playerType = player.PlayerType }, Formatting.Indented);
         }
 
-        public string MakeMove(MoveRequest request)
+        public async Task<string> MakeMove(MoveRequest request)
         {
             Log.Information("Player {PlayerName} is making a move in lobby {LobbyId}", request.PlayerName, request.LobbyId);
 
@@ -92,8 +92,13 @@ namespace super_tic_tac_toe_api.Services
             }
 
             Log.Information("Move by {PlayerName} completed successfully in lobby {LobbyId}", request.PlayerName, request.LobbyId);
+
+            var gameState = GetGameState(request.LobbyId);
+            await WebSocketHandler.SendMessageToLobby(request.LobbyId, gameState);
+
             return JsonConvert.SerializeObject(new { success = "The move was completed successfully." }, Formatting.Indented);
         }
+
 
         public string GetGameState(int lobbyId)
         {

@@ -6,7 +6,7 @@ namespace super_tic_tac_toe_api.Services.Interfaces
     {
         string CreateLobby();
         string JoinLobby(JoinLobbyRequest request);
-        string MakeMove(MoveRequest request);
+        Task<string> MakeMove(MoveRequest request);
         string GetGameState(int lobbyId);
         string GetLobbyState(int lobbyId);
         string DeleteLobby(DeleteLobbyRequest request);
