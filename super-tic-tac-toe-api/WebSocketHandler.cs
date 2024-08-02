@@ -17,11 +17,13 @@ public static class WebSocketHandler
         var query = context.Request.Query;
         if (!int.TryParse(query["lobbyId"], out int lobbyId) || string.IsNullOrEmpty(query["playerName"]))
         {
+            await SendMessageToSocket(webSocket, JsonConvert.SerializeObject(new { error = "Invalid params" }, Formatting.Indented));
             return;
         }
 
         if (!_lobbyService.HasLobby(lobbyId))
         {
+            await SendMessageToSocket(webSocket, JsonConvert.SerializeObject(new { error = "Lobby not found"}, Formatting.Indented));
             return;
         }
 
@@ -35,18 +37,21 @@ public static class WebSocketHandler
         var joinResponse = _lobbyService.JoinLobby(new JoinLobbyRequest { LobbyId = lobbyId, PlayerName = playerName });
         if (joinResponse.Contains("error"))
         {
+            await SendMessageToSocket(webSocket, joinResponse);
             return;
         }
 
         _sockets[lobbyId][playerName] = webSocket;
 
+        var gameState = _lobbyService.GetGameState(lobbyId);
+
+        await SendMessageToPlayer(lobbyId, playerName, gameState);
         await ListenForMessages(webSocket, lobbyId, playerName);
 
         _sockets[lobbyId].Remove(playerName);
         _lobbyService.DeletePlayer(new DeletePlayerRequest { LobbyId = lobbyId, PlayerName=playerName });
 
         //TODO add lobby removing
-        //TODO removing player from lobby
     }
 
     private static async Task ListenForMessages(WebSocket webSocket, int lobbyId, string playerName)
@@ -100,6 +105,15 @@ public static class WebSocketHandler
             {
                 await webSocket.SendAsync(new ArraySegment<byte>(messageBuffer), WebSocketMessageType.Text, true, CancellationToken.None);
             }
+        }
+    }
+
+    public static async Task SendMessageToSocket(WebSocket webSocket, string message)
+    {
+        var messageBuffer = Encoding.UTF8.GetBytes(message);
+        if (webSocket.State == WebSocketState.Open)
+        {
+            await webSocket.SendAsync(new ArraySegment<byte>(messageBuffer), WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }
 
