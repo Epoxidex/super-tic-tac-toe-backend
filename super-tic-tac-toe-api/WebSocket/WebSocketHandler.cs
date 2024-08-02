@@ -92,7 +92,7 @@ public static class WebSocketHandler
         var moveRequest = JsonConvert.DeserializeObject<MoveRequest>(message);
         if (moveRequest != null)
         {
-            var response = await _lobbyService.MakeMove(moveRequest);
+            var response = _lobbyService.MakeMove(moveRequest);
             if (response.Contains("error"))
             {
                 await SendMessageToPlayer(lobbyId, playerName, response);

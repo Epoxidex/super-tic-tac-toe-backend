@@ -33,9 +33,9 @@ namespace super_tic_tac_toe_api.Controllers
         }
 
         [HttpPost("makeMove")]
-        public async Task<IActionResult> MakeMove([FromBody] MoveRequest request)
+        public IActionResult MakeMove([FromBody] MoveRequest request)
         {
-            var result = await _lobbyService.MakeMove(request);
+            var result = _lobbyService.MakeMove(request);
             if (result.Contains("Error"))
             {
                 return BadRequest(result);

@@ -5,8 +5,6 @@ using super_tic_tac_toe_api.Helpers;
 using super_tic_tac_toe_api.Logic.Enums;
 using super_tic_tac_toe_api.Models;
 using super_tic_tac_toe_api.Services.Interfaces;
-using System.Reflection.Metadata.Ecma335;
-
 namespace super_tic_tac_toe_api.Services
 {
     public class LobbyService : ILobbyService
@@ -60,7 +58,7 @@ namespace super_tic_tac_toe_api.Services
             return JsonConvert.SerializeObject(new { playerType = player.PlayerType }, Formatting.Indented);
         }
 
-        public async Task<string> MakeMove(MoveRequest request)
+        public string MakeMove(MoveRequest request)
         {
             Log.Information("Player {PlayerName} is making a move in lobby {LobbyId}", request.PlayerName, request.LobbyId);
 
