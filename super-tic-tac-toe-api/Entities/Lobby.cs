@@ -8,17 +8,11 @@ namespace super_tic_tac_toe_api.Entities
         public List<Player> Players { get; private set; }
         public Game CurrentGame { get; private set; }
 
-        public Lobby()
+        public Lobby(int lobbyId)
         {
-            LobbyId = GenerateLobbyId();
+            LobbyId = lobbyId;
             Players = new List<Player>();
             CurrentGame = new Game();
-        }
-
-        private int GenerateLobbyId()
-        {
-            var rnd = new Random();
-            return rnd.Next(10000000, 99999999);
         }
 
         public bool AddPlayer(Player player)

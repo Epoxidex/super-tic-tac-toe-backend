@@ -15,11 +15,22 @@ namespace super_tic_tac_toe_api.Services
         {
             Log.Information("Creating a new lobby");
 
-            var lobby = new Lobby();
-            lobbies.Add(lobby);
+            int uniqueLobbyId = GenerateUniqueLobbyId();
+            var lobby = new Lobby(uniqueLobbyId);
 
             Log.Information("Lobby created with ID {LobbyId}", lobby.LobbyId);
             return JsonConvert.SerializeObject(new { lobbyId = lobby.LobbyId }, Formatting.Indented);
+        }
+
+        private int GenerateUniqueLobbyId()
+        {
+            var rnd = new Random();
+            int id;
+            do
+            {
+                id = rnd.Next(10000000, 99999999);
+            } while (lobbies.Any(l => l.LobbyId == id));
+            return id;
         }
 
         public string JoinLobby(JoinLobbyRequest request)
