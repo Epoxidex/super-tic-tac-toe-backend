@@ -2,8 +2,6 @@ using Serilog;
 using Serilog.Events;
 using super_tic_tac_toe_api.Services;
 using super_tic_tac_toe_api.Services.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -26,6 +24,9 @@ builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+var lobbyService = app.Services.GetRequiredService<ILobbyService>();
+WebSocketHandler.Initialize(lobbyService);
 
 if (app.Environment.IsDevelopment())
 {

@@ -11,5 +11,6 @@ namespace super_tic_tac_toe_api.Services.Interfaces
         string GetLobbyState(int lobbyId);
         string DeleteLobby(DeleteLobbyRequest request);
         string DeletePlayer(DeletePlayerRequest request);
+        bool HasLobby(int lobbyId);
     }
 }

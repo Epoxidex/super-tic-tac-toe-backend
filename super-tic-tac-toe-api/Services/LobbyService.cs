@@ -5,6 +5,7 @@ using super_tic_tac_toe_api.Helpers;
 using super_tic_tac_toe_api.Logic.Enums;
 using super_tic_tac_toe_api.Models;
 using super_tic_tac_toe_api.Services.Interfaces;
+using System.Reflection.Metadata.Ecma335;
 
 namespace super_tic_tac_toe_api.Services
 {
@@ -93,9 +94,6 @@ namespace super_tic_tac_toe_api.Services
 
             Log.Information("Move by {PlayerName} completed successfully in lobby {LobbyId}", request.PlayerName, request.LobbyId);
 
-            var gameState = GetGameState(request.LobbyId);
-            await WebSocketHandler.SendMessageToLobby(request.LobbyId, gameState);
-
             return JsonConvert.SerializeObject(new { success = "The move was completed successfully." }, Formatting.Indented);
         }
 
@@ -181,5 +179,6 @@ namespace super_tic_tac_toe_api.Services
             Log.Information("Player {PlayerName} removed from lobby {LobbyId}", request.PlayerName, request.LobbyId);
             return JsonConvert.SerializeObject(new { success = $"Player {request.PlayerName} removed from lobby {request.LobbyId}." }, Formatting.Indented);
         }
+        public bool HasLobby(int lobbyId) => lobbies.Any(l => l.LobbyId == lobbyId); 
     }
 }
