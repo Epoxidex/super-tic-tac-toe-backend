@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Serilog;
 using super_tic_tac_toe_api.Models;
 using super_tic_tac_toe_api.Services.Interfaces;
 using System.Net.WebSockets;
@@ -57,23 +58,34 @@ public static class WebSocketHandler
     private static async Task ListenForMessages(WebSocket webSocket, int lobbyId, string playerName)
     {
         var buffer = new byte[1024 * 4];
-        WebSocketReceiveResult result;
-
-        while (webSocket.State == WebSocketState.Open)
+        try
         {
-            result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            while (webSocket.State == WebSocketState.Open)
+            {
+                WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-            if (result.MessageType == WebSocketMessageType.Text)
-            {
-                string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                await ProcessMessage(lobbyId, playerName, message);
-            }
-            else if (result.MessageType == WebSocketMessageType.Close)
-            {
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed by the WebSocket client", CancellationToken.None);
+                if (result.MessageType == WebSocketMessageType.Text)
+                {
+                    string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    await ProcessMessage(lobbyId, playerName, message);
+                }
+                else if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed by the WebSocket client", CancellationToken.None);
+                    break;
+                }
             }
         }
+        catch (WebSocketException ex)
+        {
+            Log.Error($"WebSocketException: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"Exception: {ex.Message}");
+        }
     }
+
 
     private static async Task ProcessMessage(int lobbyId, string playerName, string message)
     {
