@@ -51,7 +51,7 @@ public static class WebSocketHandler
         _sockets[lobbyId].Remove(playerName);
         _lobbyService.DeletePlayer(new DeletePlayerRequest { LobbyId = lobbyId, PlayerName=playerName });
 
-        //TODO add lobby removing
+        
     }
 
     private static async Task ListenForMessages(WebSocket webSocket, int lobbyId, string playerName)

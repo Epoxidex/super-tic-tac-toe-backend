@@ -44,7 +44,7 @@ namespace super_tic_tac_toe_api.Services
             CellType playerType = lobby.Players.Count switch
             {
                 0 => CellType.X,
-                1 => CellType.O,
+                1 => lobby.Players.First().PlayerType == CellType.X ? CellType.O : CellType.X,
                 _ => CellType.None,
             };
 
