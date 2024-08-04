@@ -17,6 +17,7 @@ namespace super_tic_tac_toe_api.Services
 
             int uniqueLobbyId = GenerateUniqueLobbyId();
             var lobby = new Lobby(uniqueLobbyId);
+            lobbies.Add(lobby);
 
             Log.Information("Lobby created with ID {LobbyId}", lobby.LobbyId);
             return JsonConvert.SerializeObject(new { lobbyId = lobby.LobbyId }, Formatting.Indented);
